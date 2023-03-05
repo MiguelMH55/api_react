@@ -15,7 +15,13 @@ function App() {
   const [Nombre, setNombre] = useState('');
   const [Estado, setEstado] = useState([]);
   const [Roles,  setRoles]  = useState([]);
+  const [modalEdt, setmodalEdt] = useState(false);
   const [modal, setModal] = useState(false);
+  const toggle1 = (id, nombre) => {
+    setmodalEdt(!modalEdt);
+    setId(id);
+    setNombre(nombre);
+  }
   const toggle = () => setModal(!modal)
 
   const URL = "https://localhost:7249/api/t_roles";
@@ -41,12 +47,20 @@ function App() {
     cargarDatos();
   }
 
-  const cargarRolID = ()=>{
 
-  }
-
-  const editarRol = ()=>{
+  const update = async()=>{
+   await axios.put(`${URL}/${Id}`, {
+    roL_ID            : Id,
+    roL_NOMBRE : Nombre
     
+  });
+  cargarDatos();
+  }
+  const abrircerrarModal = ()=>{
+    setModal(!modal);
+  }
+  const abrircerrarModalEdt = ()=>{
+    setmodalEdt(!modalEdt);
   }
 
   return (
@@ -84,7 +98,7 @@ function App() {
               <td>{gestor.roL_ID}</td>
               <td>{gestor.roL_NOMBRE}</td>
               <td>
-                <button className="btn btn-primary" onClick="">Editar</button> {"  "}
+                <button className="btn btn-primary" onClick={()=>toggle1(gestor.roL_ID, gestor.roL_NOMBRE)} >Editar</button> {"  "}
                 <button className="btn btn-danger" onClick={()=>eliminarRol(gestor.roL_ID)}>Eliminar</button>
               </td>
             </tr>
@@ -120,7 +134,7 @@ function App() {
         </ModalBody>
         <ModalFooter>
         <button className="btn btn-primary" onClick={()=>peticionPost()}>Guardar</button>
-        <button className="btn btn-danger" onClick="">Cancelar</button>
+        <button className="btn btn-danger" onClick={()=>abrircerrarModal()}>Cancelar</button>
         
       </ModalFooter>
       </Modal>
@@ -129,28 +143,34 @@ function App() {
         Registro
       </Button> */}
 
-      {/* FORMULARIO DE EDICION */}
+      {/* FORMULARIO DE EDICION  */}
 
-      {/* <Modal isOpen={modal} toggle={toggle}>
+       <Modal isOpen={modalEdt} toggle={toggle1}>
         <ModalHeader>
           Formulario de edicion de roles
         </ModalHeader>
         <ModalBody>
-        <label>Ingrese los datos:</label>
+        
+          <label>Ingrese los datos:</label>
         <br />
         <div className="form-group">
+          {/* <br />
+          <label>ID de rol </label>
+          <br />
+          <input type="text" onChange={(e) => setId(e.target.value)} className="form-control" name="Id" value=""/>
+          <br /> */}
           <br />
           <label>Nombre de rol </label>
           <br />
-          <input type="text" className="form-control" name="nombre" value=""/>
+          <input type="text"  onChange={(e) => setNombre(e.target.value)}  className="form-control" name="Nombre" value={Nombre}/>
           <br />
         </div>
         </ModalBody>
         <ModalFooter>
-        <button className="btn btn-primary" onClick="">Editar</button>
-        <button className="btn btn-danger" onClick="">Cancelar</button>
+        <button type="submit"  className="btn btn-primary" onClick={()=>update()}>Editar</button>
+        <button className="btn btn-danger" onClick={()=>abrircerrarModalEdt()}>Cancelar</button>
       </ModalFooter>
-      </Modal> */}
+      </Modal>
 
     </div>
 
